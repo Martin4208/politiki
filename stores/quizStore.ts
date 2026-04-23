@@ -9,7 +9,7 @@ type QuizStore = {
     hydrateAnswers: (answers: Record<string, number>) => void
 }
 
-export const useQuizStore = create<QuizStore>(
+export const useQuizStore = create<QuizStore>()(
     persist(
         (set) => ({
             answers: {},

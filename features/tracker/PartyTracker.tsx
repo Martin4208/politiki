@@ -110,7 +110,7 @@ export function PartyTracker() {
   const { data, isLoading, isError } = useTracker(
     selectedParty
       ? {
-          party_id: selectedParty,
+          party_id: Number(selectedParty),
           status: activeStatus ? [activeStatus] : undefined,
           page,
           limit: 20,

@@ -13,9 +13,9 @@ import { Button } from '@/components/ui/button';
 // --- 型定義 ---
 type NavItem = {
   id: number;
-  name: string;
+  name: string | null;
   href: string;
-  icon?: LucideIcon;
+  icon?: React.ComponentType<{ className?: string }>;
   avatar?: boolean;
 };
 
@@ -112,9 +112,9 @@ const NavButton = ({
         `}
       >
         {avatar ? (
-          <Avatar name={name} />
+          <Avatar name={name ?? ''} />
         ) : (
-          <Icon className="w-4 h-4 shrink-0" />
+          Icon && <Icon className="w-4 h-4 shrink-0" />
         )}
         {open && <span>{name}</span>}
       </button>
@@ -140,7 +140,8 @@ export function Sidebar() {
   const USER_NAV: NavItem = {
     id: 100,
     name: name,
-    avatar: true
+    avatar: true,
+    href: '#'
   };
 
   const checkActive = (href: string) =>

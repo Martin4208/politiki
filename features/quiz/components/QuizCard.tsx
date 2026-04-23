@@ -80,9 +80,9 @@ export function QuizCard() {
 
     const handleAnswerSelect = (value: number) => {
         if (user) {
-            setAnswer(currentQuestion.id, value);
+            setAnswer(currentQuestion.id.toString(), value);
         } else {
-            setLocalAnswers(prev => ({ ...prev, [currentQuestion.id]: value }));
+            setLocalAnswers(prev => ({ ...prev, [currentQuestion.id.toString()]: value }));
         }
     };
 

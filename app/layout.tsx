@@ -1,4 +1,5 @@
 import "./globals.css";
+import '@radix-ui/colors/black-alpha.css';
 import { Sidebar } from '@/components/layouts/sidebar';
 import { Header } from '@/components/layouts/header';
 import { Theme } from "@radix-ui/themes";

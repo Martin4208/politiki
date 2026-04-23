@@ -15,8 +15,6 @@ export const stances_for_quick_questions: StanceData[] = [
                 source: null,
                 sourceURL: "",
                 sourcePage: "",
-                sourceURL: "",
-                sourcePage: "",
                 note: "消費税の直接引き下げは明記なし。飲食料品を2年間に限り消費税の対象としないことを「国民会議」で検討加速すると記載。暫定税率廃止（ガソリン・軽油）は明記"
             },
             "corporate-tax": {
@@ -983,8 +981,6 @@ export const stances_for_quick_questions: StanceData[] = [
             "consumption-tax": {
                 stance: 4,
                 source: null,
-                sourceURL: "",
-                sourcePage: "",
                 sourceURL: "",
                 sourcePage: "",
                 note: "「消費税の段階的廃止を進め、国民負担を直接軽減。国民負担率を35%以内に収める」と明記。即時廃止ではなく段階的廃止の表現だが廃止を目標とした明確な減税志向"
