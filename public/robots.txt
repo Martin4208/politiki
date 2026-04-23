@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /pledge_tracker
+Allow: /about
+Allow: /legal/terms
+Allow: /legal/privacy
+Disallow: /dashboard
+Disallow: /questions
+Disallow: /parties
+Disallow: /learn
+Disallow: /finance
+Disallow: /issue
+Disallow: /radar
+Disallow: /journal
+Disallow: /politicians
+Disallow: /settings
+Disallow: /api/
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://politiki.jp/sitemap.xml
