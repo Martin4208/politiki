@@ -1,4 +1,4 @@
-import { NextResponse, type NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server'
 
 export default function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl
@@ -7,11 +7,11 @@ export default function proxy(request: NextRequest) {
         '/',
         '/about',
         '/legal/terms',
-        '/pledge_tracker'
+        '/pledge_tracker',
     ]
 
-    const isPublic = publicPaths.some(path => pathname.startsWith(path))
-    const isStaticOrApi = pathname.startsWith('/_next') || pathname.startsWith('/favicon')
+    const isPublic = publicPaths.some(path => pathname === path || pathname.startsWith(path + '/'))
+    const isStaticOrApi = pathname.startsWith('/_next') || pathname.startsWith('/favicon') || pathname.startsWith('/api')
 
     if (!isPublic && !isStaticOrApi) {
         const url = request.nextUrl.clone()
