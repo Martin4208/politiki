@@ -62,7 +62,6 @@ export interface StatusSummary {
 // ---------------------------------------------------------------------------
 // Supabase クライアント
 // ---------------------------------------------------------------------------
-const supabase = getSupabase()
 
 const STATUS_ORDER: Record<FinalStatus, number> = {
   regressive: 1,
@@ -76,6 +75,7 @@ const STATUS_ORDER: Record<FinalStatus, number> = {
 // ---------------------------------------------------------------------------
 
 export async function GET(req: NextRequest) {
+  const supabase = getSupabase()
   const { searchParams } = req.nextUrl;
 
   // --- パラメータのパース ---
