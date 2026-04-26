@@ -11,7 +11,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 
 // ---------------------------------------------------------------------------
 // 型定義
@@ -62,6 +62,7 @@ export interface StatusSummary {
 // ---------------------------------------------------------------------------
 // Supabase クライアント
 // ---------------------------------------------------------------------------
+const supabase = getSupabase()
 
 const STATUS_ORDER: Record<FinalStatus, number> = {
   regressive: 1,

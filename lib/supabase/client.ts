@@ -1,5 +1,5 @@
-import { supabase } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 
 export function createClient() {
-    return supabase
+    return getSupabase()
 }
