@@ -4,6 +4,7 @@ import { Sidebar } from '@/components/layouts/sidebar';
 import { Header } from '@/components/layouts/header';
 import { Theme } from "@radix-ui/themes";
 import { AuthProvider } from '@/providers/auth-provider';
+import { Analytics } from '@vercel/analytics/next'
 
 export default function RootLayout({
   children,
@@ -19,21 +20,22 @@ export default function RootLayout({
       <body>
           <Theme>
             <AuthProvider>
-              <div className="bg-background text-foreground h-screen flex flex-row">
-                {/** Header */}
-                {/* <div> 
-                  <Sidebar />
-                </div> */}
-                {/** Sidebar + Main */}
-                <div className="flex flex-col h-full w-full overflow-hidden">
-                  <Header />
-                  
+                <div className="bg-background text-foreground h-screen flex flex-row">
+                  {/** Sidebar */}
+                  {/* <div> 
+                    <Sidebar />
+                  </div> */}
+                  {/** Header + Main */}
+                  <div className="flex flex-col h-full w-full overflow-hidden">
+                    <Header />
+                    
 
-                  <main className="flex-1 w-full h-screen overflow-hidden">
-                    {children}
-                  </main>
+                    <main className="flex-1 w-full h-screen overflow-hidden">
+                      {children}
+                    </main>
+                  </div>
                 </div>
-              </div>
+                <Analytics />
             </AuthProvider>
           </Theme>
       </body>
