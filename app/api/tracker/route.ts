@@ -11,7 +11,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { Pool } from "pg";
+import { supabase } from '@/lib/supabase';
 
 // ---------------------------------------------------------------------------
 // 型定義
@@ -60,15 +60,16 @@ export interface StatusSummary {
 }
 
 // ---------------------------------------------------------------------------
-// DB接続
+// Supabase クライアント
 // ---------------------------------------------------------------------------
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 10,
-  idleTimeoutMillis: 30_000,
-});
-
+const STATUS_ORDER: Record<FinalStatus, number> = {
+  regressive: 1,
+  achieved: 2,
+  in_progress: 3,
+  partial: 4,
+  unstarted: 5,
+};
 // ---------------------------------------------------------------------------
 // GET ハンドラ
 // ---------------------------------------------------------------------------
@@ -98,120 +99,51 @@ export async function GET(req: NextRequest) {
     ? (statusRaw.split(",") as FinalStatus[])
     : undefined;
 
-  const client = await pool.connect();
-
   try {
-    // ── WHERE句を動的に構築 ─────────────────────────────────
-    const conditions: string[] = [];
-    const params: unknown[] = [];
-    let paramIdx = 1;
+    // ── メインクエリ ──────────────────────────────────────
+    let query = supabase
+      .from("pledge_tracker")
+      .select(
+        `pledge_id, pledge_text, party_id, category, final_status,
+         best_score, best_bill_id, all_bill_ids, achieved_elements,
+         missing_elements, reasoning, needs_review, review_reason, updated_at`,
+        { count: "exact" }
+      )
+      .range(offset, offset + limit - 1);
 
     if (administration !== undefined) {
-      conditions.push(`pt.administration_id = $${paramIdx++}`);
-      params.push(administration);
+      query = query.eq("administration_id", administration);
     }
     if (party_id !== undefined) {
-      conditions.push(`pt.party_id = $${paramIdx++}`);
-      params.push(party_id);
+      query = query.eq("party_id", party_id);
     }
     if (category) {
-      conditions.push(`pt.category = $${paramIdx++}`);
-      params.push(category);
+      query = query.eq("category", category);
     }
     if (statusFilter && statusFilter.length > 0) {
-      conditions.push(`pt.final_status = ANY($${paramIdx++}::text[])`);
-      params.push(statusFilter);
+      query = query.in("final_status", statusFilter);
     }
     if (needs_review !== undefined) {
-      conditions.push(`pt.needs_review = $${paramIdx++}`);
-      params.push(needs_review);
+      query = query.eq("needs_review", needs_review);
     }
 
-    const where =
-      conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+    // Supabase JS では CASE 式の ORDER BY は使えないので、
+    // best_score の降順だけ DB 側で行い、status 順はクライアントでソート
+    query = query.order("best_score", { ascending: false });
 
-    // ── メインクエリ ────────────────────────────────────────
-    const dataQuery = `
-      SELECT
-        pt.pledge_id,
-        pt.pledge_text,
-        pt.party_id,
-        pt.category,
-        pt.final_status,
-        pt.best_score,
-        pt.best_bill_id,
-        pt.all_bill_ids,
-        pt.achieved_elements,
-        pt.missing_elements,
-        pt.reasoning,
-        pt.needs_review,
-        pt.review_reason,
-        pt.updated_at
-      FROM pledge_tracker pt
-      ${where}
-      ORDER BY
-        CASE pt.final_status
-          WHEN 'regressive'  THEN 1
-          WHEN 'achieved'    THEN 2
-          WHEN 'in_progress' THEN 3
-          WHEN 'partial'     THEN 4
-          WHEN 'unstarted'   THEN 5
-        END,
-        pt.best_score DESC
-      LIMIT $${paramIdx++} OFFSET $${paramIdx++}
-    `;
-    params.push(limit, offset);
+    const { data, count, error } = await query;
 
-    // ── カウントクエリ ──────────────────────────────────────
-    const countQuery = `
-      SELECT COUNT(*) AS total FROM pledge_tracker pt ${where}
-    `;
-    const countParams = params.slice(0, params.length - 2);
+    if (error) throw error;
 
-    // ── サマリークエリ（status / needs_review フィルタを除外）───
-    const summaryConditions: string[] = [];
-    const summaryParams: unknown[] = [];
-    let sIdx = 1;
+    // ── クライアント側でステータス順ソート ────────────────
+    const sorted = (data ?? []).sort((a, b) => {
+      const sa = STATUS_ORDER[a.final_status as FinalStatus] ?? 99;
+      const sb = STATUS_ORDER[b.final_status as FinalStatus] ?? 99;
+      if (sa !== sb) return sa - sb;
+      return (b.best_score ?? 0) - (a.best_score ?? 0);
+    });
 
-    if (administration !== undefined) {
-      summaryConditions.push(`pt.administration_id = $${sIdx++}`);
-      summaryParams.push(administration);
-    }
-    if (party_id !== undefined) {
-      summaryConditions.push(`pt.party_id = $${sIdx++}`);
-      summaryParams.push(party_id);
-    }
-    if (category) {
-      summaryConditions.push(`pt.category = $${sIdx++}`);
-      summaryParams.push(category);
-    }
-
-    const summaryWhere =
-      summaryConditions.length > 0
-        ? `WHERE ${summaryConditions.join(" AND ")}`
-        : "";
-
-    const summaryQuery = `
-      SELECT
-        COUNT(*) FILTER (WHERE pt.final_status = 'achieved')    AS achieved,
-        COUNT(*) FILTER (WHERE pt.final_status = 'in_progress') AS in_progress,
-        COUNT(*) FILTER (WHERE pt.final_status = 'partial')     AS partial,
-        COUNT(*) FILTER (WHERE pt.final_status = 'regressive')  AS regressive,
-        COUNT(*) FILTER (WHERE pt.final_status = 'unstarted')   AS unstarted,
-        COUNT(*) FILTER (WHERE pt.needs_review = TRUE)          AS needs_review
-      FROM pledge_tracker pt
-      ${summaryWhere}
-    `;
-
-    // ── 並列実行 ────────────────────────────────────────────
-    const [dataResult, countResult, summaryResult] = await Promise.all([
-      client.query(dataQuery, params),
-      client.query(countQuery, countParams),
-      client.query(summaryQuery, summaryParams),
-    ]);
-
-    // ── レスポンス整形 ──────────────────────────────────────
-    const items: PledgeTrackerItem[] = dataResult.rows.map((row) => ({
+    const items: PledgeTrackerItem[] = sorted.map((row) => ({
       pledge_id: Number(row.pledge_id),
       pledge_text: row.pledge_text,
       party_id: Number(row.party_id),
@@ -225,22 +157,46 @@ export async function GET(req: NextRequest) {
       reasoning: row.reasoning ?? "",
       needs_review: Boolean(row.needs_review),
       review_reason: row.review_reason ?? null,
-      updated_at: row.updated_at?.toISOString() ?? "",
+      updated_at: row.updated_at ?? "",
     }));
 
-    const s = summaryResult.rows[0];
+    // ── サマリークエリ（status/needs_review フィルタ除外）──
+    let summaryQuery = supabase
+      .from("pledge_tracker")
+      .select("final_status, needs_review");
+
+    if (administration !== undefined) {
+      summaryQuery = summaryQuery.eq("administration_id", administration);
+    }
+    if (party_id !== undefined) {
+      summaryQuery = summaryQuery.eq("party_id", party_id);
+    }
+    if (category) {
+      summaryQuery = summaryQuery.eq("category", category);
+    }
+
+    const { data: summaryData, error: summaryError } = await summaryQuery;
+    if (summaryError) throw summaryError;
+
     const summary: StatusSummary = {
-      achieved: Number(s.achieved),
-      in_progress: Number(s.in_progress),
-      partial: Number(s.partial),
-      regressive: Number(s.regressive),
-      unstarted: Number(s.unstarted),
-      needs_review: Number(s.needs_review),
+      achieved: 0,
+      in_progress: 0,
+      partial: 0,
+      regressive: 0,
+      unstarted: 0,
+      needs_review: 0,
     };
 
+    for (const row of summaryData ?? []) {
+      const fs = row.final_status as FinalStatus;
+      if (fs in summary) summary[fs]++;
+      if (row.needs_review) summary.needs_review++;
+    }
+
+    // ── レスポンス ────────────────────────────────────────
     const response: PledgeTrackerResponse = {
       items,
-      total: Number(countResult.rows[0].total),
+      total: count ?? 0,
       page,
       limit,
       summary,
@@ -252,12 +208,10 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (err) {
-    console.error("[/api/tracker] DB error:", err);
+    console.error("[/api/tracker] Supabase error:", err);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
     );
-  } finally {
-    client.release();
   }
 }
