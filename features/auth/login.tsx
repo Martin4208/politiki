@@ -9,13 +9,14 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 
 export function Login() {
-    const supabase = createClient();
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleLogin = async () => {
+        const supabase = createClient();
+
         setErrorMessage('');
         const { data, error } = await supabase.auth.signInWithPassword({
             email, password

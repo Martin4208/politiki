@@ -7,11 +7,12 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
 export function Logout() {
-    const supabase = createClient();
     const router = useRouter();
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleLogout = async () => {
+        const supabase = createClient();
+
         setErrorMessage('');
         const { error } = await supabase.auth.signOut();
         if (error) {

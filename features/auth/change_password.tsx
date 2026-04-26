@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 
 export function ChangePassword() {
     const router = useRouter();
-    const supabase = createClient();
+    
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
@@ -16,6 +16,7 @@ export function ChangePassword() {
     const handleSendNewPassword = async () => {
         setErrorMessage('');
         setSuccessMessage('');
+        const supabase = createClient();
         const { error } = await supabase.auth.updateUser({ password });
         if (error) {
             setErrorMessage('パスワードの変更に失敗しました。再度お試しください');

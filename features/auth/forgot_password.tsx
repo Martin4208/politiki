@@ -9,10 +9,11 @@ import { ArrowLeft } from 'lucide-react';
 
 export function ForgotPassword() {
     const router = useRouter();
-    const supabase = createClient();
     const [email, setEmail] = useState('');
 
     const handleSendEmail = async () => {
+        const supabase = createClient();
+    
         await supabase.auth.resetPasswordForEmail(
             email, {
                 redirectTo: `${window.location.origin}/change_password`,
