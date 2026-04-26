@@ -57,7 +57,7 @@ const ELECTIONS: Election[] = [
         party_id: 1,
         party_name: '自民党',
         administration_id: 105,
-        note: '高市内閣が実施主体。第2次高市内閣（2026年2月〜）も継続中。',
+        note: '第2次高市内閣に該当',
       },
     ],
   },
@@ -588,13 +588,9 @@ export function AdministrationTracker() {
             </button>
           )}
           <h2 className="text-2xl font-bold tracking-tight">
-            {view === 'dashboard' ? '公約トラッカー' : `${selectedParty?.party_name} の公約`}
+            {view === 'dashboard' ? '公約トラッカー' : `${selectedParty?.party_name}`}
           </h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            {view === 'dashboard'
-              ? '選挙公約の達成度をAIが評価。根拠を並置し、誰でも検証できる形で公開。'
-              : `${election.label} — 各公約をクリックして詳細を確認`}
-          </p>
+         
         </div>
 
         {/* ── ディスクレーマー ── */}

@@ -1,12 +1,14 @@
 'use client'
 
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/providers/auth-provider';
 
 export function Header() {
     const router = useRouter();
+    const pathname = usePathname();
+    const isActive = pathname !== '/about';
     const { user } = useAuth();
 
     const handleLogin = () => {
@@ -33,7 +35,8 @@ export function Header() {
             </Button>
 
             {/* 右側：本アプリについて */}
-            <div className="flex items-center gap-6">
+            {isActive && (
+                <div className="flex items-center gap-6">
                     <Button
                         onClick={handleAbout}
                         className="text-sm font-medium bg-black hover:bg-gray-800 transition-colors"
@@ -41,6 +44,8 @@ export function Header() {
                         このアプリについて
                     </Button>
                 </div>
+            )}
+            
 
             {/* 右側：ボタン群 */}
             {false && (

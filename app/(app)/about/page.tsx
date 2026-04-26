@@ -12,7 +12,7 @@ export default function About() {
       <div className="max-w-2xl mx-auto px-6 py-12 space-y-12">
 
         <button
-              onClick={() => window.history.back()}
+              onClick={() => router.push('/')}
               className="flex items-center px-4 py-2.5 rounded-lg text-sm border hover:bg-accent hover:cursor-pointer transition-colors"
             >
             戻る

@@ -7,7 +7,7 @@ const TABS = [
   {
     group: '公約',
     items: [
-      { id: 1, label: '政権公約', description: '各政権の達成度' },
+      { id: 1, label: '公約トラッカー'},
     ],
   },
 ];
@@ -22,27 +22,21 @@ export default function PledgeTrackerPage() {
         <nav className="flex-1 px-3 py-4 space-y-5">
           {TABS.map((group) => (
             <div key={group.group}>
-              <p className="px-3 mb-1 text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
-                {group.group}
-              </p>
               <div className="space-y-0.5">
                 {group.items.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setActiveId(item.id)}
                     className={`
-                      w-full flex flex-col items-start gap-0.5 px-3 py-2 rounded-md cursor-pointer
-                      text-left transition-colors
+                      w-full flex flex-col items-start gap-1 px-4 py-3 rounded-lg cursor-pointer
+                      text-left transition-all duration-200
                       ${activeId === item.id
-                        ? 'bg-foreground text-background'
+                        ? 'bg-foreground text-background shadow-md scale-[1.02]' // 選択時に少し大きく
                         : 'text-muted-foreground hover:text-foreground hover:bg-accent'}
                     `}
                   >
-                    <span className="text-sm font-medium leading-tight">{item.label}</span>
-                    <span className={`text-[10px] leading-tight ${
-                      activeId === item.id ? 'opacity-60' : 'text-muted-foreground/60'
-                    }`}>
-                      {item.description}
+                    <span className="text-base font-bold leading-tight">
+                      {item.label}
                     </span>
                   </button>
                 ))}
