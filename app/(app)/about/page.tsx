@@ -38,45 +38,33 @@ export default function About() {
         <section className="space-y-4">
             <h2 className="text-lg font-bold">引用</h2>
             <div className="grid grid-cols-1 gap-3">
-                <div className="flex items-center justify-between p-4 rounded-xl border bg-card">
-                    <div>
-                        <p className="text-sm font-medium mt-1">自民党の政策BANK</p>
-                    </div>
-                    <a 
-                        href="https://www.jimin.jp/policy/seisaku_bank/" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="p-2 hover:bg-accent rounded-full transition-colors"
-                    >
-                        <ExternalLink className="w-4 h-4 text-muted-foreground" />
-                    </a>
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-xl border bg-card">
-                    <div>
-                        <p className="text-sm font-medium mt-1">歴代内閣</p>
-                    </div>
-                    <a 
-                        href="https://www.kantei.go.jp/jp/rekidainaikaku/index.html"
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="p-2 hover:bg-accent rounded-full transition-colors"
-                    >
-                        <ExternalLink className="w-4 h-4 text-muted-foreground" />
-                    </a>
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-xl border bg-card">
-                    <div>
-                        <p className="text-sm font-medium mt-1">法案データ</p>
-                    </div>
-                    <a 
-                        href="https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/menu.htm"
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="p-2 hover:bg-accent rounded-full transition-colors"
-                    >
-                        <ExternalLink className="w-4 h-4 text-muted-foreground" />
-                    </a>
-                </div>
+                <a 
+                    href="https://www.jimin.jp/policy/seisaku_bank/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-4 rounded-xl border bg-card hover:bg-accent transition-colors"
+                >
+                    <p className="text-sm font-medium">自民党の政策BANK</p>
+                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                </a>
+                <a 
+                    href="https://www.kantei.go.jp/jp/rekidainaikaku/index.html"
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-4 rounded-xl border bg-card hover:bg-accent transition-colors"
+                >
+                    <p className="text-sm font-medium">歴代内閣</p>
+                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                </a>
+                <a 
+                    href="https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/menu.htm"
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-4 rounded-xl border bg-card hover:bg-accent transition-colors"
+                >
+                    <p className="text-sm font-medium">法案データ</p>
+                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                </a>
             </div>
         </section>
  
@@ -192,7 +180,7 @@ export default function About() {
           <div className="flex gap-3">
             <button
               onClick={() => router.push('/legal/terms')}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm border hover:bg-accent transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm border hover:bg-accent transition-colors hover:cursor-pointer"
             >
               利用規約
               <ExternalLink className="w-3 h-3 text-muted-foreground" />

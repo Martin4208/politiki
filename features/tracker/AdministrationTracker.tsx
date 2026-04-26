@@ -286,7 +286,7 @@ function PartyDashboardCard({
                   if (count === 0) return null;
                   const meta = STATUS[s];
                   return (
-                    <span key={s} className="flex items-center gap-1 text-xs">
+                    <span key={s} className="flex items-center gap-1 text-xs hover:cursor-pointer">
                       <span className={`w-1.5 h-1.5 rounded-full ${meta.dot}`} />
                       <span className="text-muted-foreground">{meta.label}</span>
                       <span className="tabular-nums font-medium">{count}</span>
@@ -330,7 +330,7 @@ function PledgeRow({
   return (
     <button
       onClick={onClick}
-      className="w-full text-left border-b border-border/50 py-4 px-3 hover:bg-accent/50 transition-colors duration-150 flex items-center gap-4"
+      className="w-full text-left border-b border-border/50 py-4 px-3 hover:bg-accent/50 transition-colors duration-150 flex items-center gap-4 hover:cursor-pointer"
     >
       <div className="flex-shrink-0 w-10 text-right">
         <span className={`text-base font-bold tabular-nums ${s.text}`}>{item.best_score}</span>
@@ -397,7 +397,7 @@ function DetailPanel({
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors hover:cursor-pointer"
           >
             ✕
           </button>
@@ -582,7 +582,7 @@ export function AdministrationTracker() {
           {view === 'party' && (
             <button
               onClick={backToDashboard}
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors mb-3 flex items-center gap-1"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors mb-3 flex items-center gap-1 hover:cursor-pointer"
             >
               ← ダッシュボードに戻る
             </button>
@@ -612,7 +612,7 @@ export function AdministrationTracker() {
                   setSelectedPledge(null);
                 }}
                 className={`
-                  px-3 py-2 rounded-lg text-sm border transition-all
+                  px-3 py-2 rounded-lg text-sm border transition-all hover:cursor-pointer
                   ${selectedElection === e.id
                     ? 'bg-foreground text-background border-transparent'
                     : 'text-muted-foreground hover:text-foreground hover:bg-accent border-transparent hover:border-border'}
