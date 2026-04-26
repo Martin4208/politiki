@@ -15,11 +15,13 @@ const AuthContext = createContext<AuthContextType>({
 })
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const supabase = getSupabase()
+  
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const supabase = getSupabase()
+    
     const getUser = async () => {
       const { data } = await supabase.auth.getUser()
       setUser(data.user)
