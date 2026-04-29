@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
 
   title: {
-    default: `${SITE_NAME} – 政治ポジション診断 & 公約トラッカー`,
+    default: `${SITE_NAME} – 公約トラッカー`,
     template: `%s | ${SITE_NAME}`,
   },
 

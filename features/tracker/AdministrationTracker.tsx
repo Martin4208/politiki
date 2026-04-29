@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useTracker } from './useTracker';
+import { useElections } from './useElections';
+import type { ElectionParty } from './useElections';
 import type { PledgeTrackerItem, FinalStatus } from '@/app/api/tracker/route';
 
 // ---------------------------------------------------------------------------
@@ -28,105 +30,6 @@ function statusColor(s: FinalStatus): string {
   };
   return map[s];
 }
-
-// ---------------------------------------------------------------------------
-// 選挙・政党データ
-// ---------------------------------------------------------------------------
-
-type PartyEntry = {
-  party_id: number;
-  party_name: string;
-  administration_id: number | null;
-  note?: string;
-};
-
-type Election = {
-  id: string;
-  label: string;
-  date: string;
-  parties: PartyEntry[];
-};
-
-const ELECTIONS: Election[] = [
-  {
-    id: '2026',
-    label: '2026年衆院選',
-    date: '2026-2-8',
-    parties: [
-      {
-        party_id: 1,
-        party_name: '自民党',
-        administration_id: 105,
-        note: '第2次高市内閣に該当',
-      },
-    ],
-  },
-  {
-    id: '2024',
-    label: '2024年衆院選',
-    date: '2024-10-27',
-    parties: [
-      { party_id: 1, party_name: '自民党', administration_id: null },
-    ],
-  },
-  {
-    id: '2021',
-    label: '2021年衆院選',
-    date: '2021-10-31',
-    parties: [
-      { party_id: 1, party_name: '自民党', administration_id: null },
-    ],
-  },
-  {
-    id: '2017',
-    label: '2017年衆院選',
-    date: '2017-10-22',
-    parties: [
-      { party_id: 1, party_name: '自民党', administration_id: null },
-    ],
-  },
-  {
-    id: '2014',
-    label: '2014年衆院選',
-    date: '2014-12-14',
-    parties: [
-      { party_id: 1, party_name: '自民党', administration_id: null },
-    ],
-  },
-  {
-    id: '2012',
-    label: '2012年衆院選',
-    date: '2012-12-16',
-    parties: [
-      { party_id: 1, party_name: '自民党', administration_id: null },
-    ],
-  },
-  {
-    id: '2009',
-    label: '2009年衆院選',
-    date: '2009-08-30',
-    parties: [
-      { party_id: 1, party_name: '自民党', administration_id: null, note: '自民党は野党に転落。公約は実行されず。' },
-      { party_id: 2, party_name: '民主党', administration_id: null },
-    ],
-  },
-  {
-    id: '2005',
-    label: '2005年衆院選',
-    date: '2005-09-11',
-    parties: [
-      { party_id: 1, party_name: '自民党', administration_id: null },
-    ],
-  },
-  {
-    id: '2003',
-    label: '2003年衆院選',
-    date: '2003-11-09',
-    parties: [
-      { party_id: 1, party_name: '自民党', administration_id: null },
-    ],
-  },
-];
 
 // ---------------------------------------------------------------------------
 // ミニ・リングチャート（SVG）
@@ -234,7 +137,7 @@ function PartyDashboardCard({
   party,
   onClick,
 }: {
-  party: PartyEntry;
+  party: ElectionParty;
   onClick: () => void;
 }) {
   const hasData = party.administration_id !== null;
@@ -332,7 +235,7 @@ function PledgeRow({
       onClick={onClick}
       className="w-full text-left border-b border-border/50 py-4 px-3 hover:bg-accent/50 transition-colors duration-150 flex items-center gap-4 hover:cursor-pointer"
     >
-      <div className="flex-shrink-0 w-10 text-right">
+      <div className="shrink-0 w-10 text-right">
         <span className={`text-base font-bold tabular-nums ${s.text}`}>{item.best_score}</span>
       </div>
       <div className="flex-1 min-w-0">
@@ -371,6 +274,10 @@ function DetailPanel({
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [onClose]);
+
+  // const handleFeedback = () => {
+
+  // }
 
   return (
     <>
@@ -500,7 +407,7 @@ function DetailPanel({
                       rel="noopener noreferrer"
                       className="text-sm text-sky-400 hover:text-sky-300 underline underline-offset-2 transition-colors flex items-center gap-1.5"
                     >
-                      <span className="inline-block w-1 h-1 rounded-full bg-sky-400/50 flex-shrink-0" />
+                      <span className="inline-block w-1 h-1 rounded-full bg-sky-400/50 shrink-0" />
                       {src.label}
                       <span className="opacity-50">↗</span>
                     </a>
@@ -517,6 +424,16 @@ function DetailPanel({
               <p className="text-xs text-amber-500/70 leading-relaxed">{item.review_reason}</p>
             </div>
           )}
+
+          {/* フィードバックボタン */}
+          {/* <div>
+            <button 
+              className="border rounded-2xl hover:cursor-pointer bg-red-300"
+              onClick={() => handleFeedback}
+            >
+              間違っている
+            </button>
+          </div> */}
         </div>
       </div>
     </>
@@ -530,15 +447,24 @@ function DetailPanel({
 type View = 'dashboard' | 'party';
 
 export function AdministrationTracker() {
-  const [selectedElection, setSelectedElection] = useState(ELECTIONS[0].id);
+  const { elections, isLoading: electionsLoading, isError: electionsError } = useElections();
+
+  const [selectedElectionId, setSelectedElectionId] = useState<number | null>(null);
   const [view, setView] = useState<View>('dashboard');
   const [selectedPartyId, setSelectedPartyId] = useState<number | null>(null);
   const [activeStatus, setActiveStatus] = useState<FinalStatus | null>(null);
   const [page, setPage] = useState(1);
   const [selectedPledge, setSelectedPledge] = useState<PledgeTrackerItem | null>(null);
 
-  const election = ELECTIONS.find((e) => e.id === selectedElection)!;
-  const selectedParty = election.parties.find((p) => p.party_id === selectedPartyId) ?? null;
+  // 初回ロード時に最新の選挙を選択
+  useEffect(() => {
+    if (elections.length > 0 && selectedElectionId === null) {
+      setSelectedElectionId(elections[0].id);
+    }
+  }, [elections, selectedElectionId]);
+
+  const election = elections.find((e) => e.id === selectedElectionId) ?? null;
+  const selectedParty = election?.parties.find((p) => p.party_id === selectedPartyId) ?? null;
   const adminId = selectedParty?.administration_id ?? null;
   const hasData = adminId !== null;
 
@@ -554,7 +480,7 @@ export function AdministrationTracker() {
       : null
   );
 
-  const openPartyView = (party: PartyEntry) => {
+  const openPartyView = (party: ElectionParty) => {
     setSelectedPartyId(party.party_id);
     setView('party');
     setPage(1);
@@ -573,6 +499,23 @@ export function AdministrationTracker() {
     setPage(1);
   };
 
+  // ローディング / エラー
+  if (electionsLoading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <p className="text-muted-foreground text-sm">読み込み中...</p>
+      </div>
+    );
+  }
+
+  if (electionsError || elections.length === 0) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <p className="text-muted-foreground text-sm">選挙データの取得に失敗しました</p>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full overflow-y-auto p-6 sm:p-8 pb-30">
       <div className="max-w-3xl mx-auto">
@@ -590,7 +533,6 @@ export function AdministrationTracker() {
           <h2 className="text-2xl font-bold tracking-tight">
             {view === 'dashboard' ? '公約トラッカー' : `${selectedParty?.party_name}`}
           </h2>
-         
         </div>
 
         {/* ── ディスクレーマー ── */}
@@ -600,11 +542,11 @@ export function AdministrationTracker() {
         <div className="mb-8">
           <p className="text-xs text-muted-foreground mb-2 uppercase tracking-widest">選挙を選択</p>
           <div className="flex gap-2 flex-wrap">
-            {ELECTIONS.map((e) => (
+            {elections.map((e) => (
               <button
                 key={e.id}
                 onClick={() => {
-                  setSelectedElection(e.id);
+                  setSelectedElectionId(e.id);
                   setView('dashboard');
                   setSelectedPartyId(null);
                   setPage(1);
@@ -613,7 +555,7 @@ export function AdministrationTracker() {
                 }}
                 className={`
                   px-3 py-2 rounded-lg text-sm border transition-all hover:cursor-pointer
-                  ${selectedElection === e.id
+                  ${selectedElectionId === e.id
                     ? 'bg-foreground text-background border-transparent'
                     : 'text-muted-foreground hover:text-foreground hover:bg-accent border-transparent hover:border-border'}
                 `}
@@ -625,7 +567,7 @@ export function AdministrationTracker() {
         </div>
 
         {/* ダッシュボードビュー */}
-        {view === 'dashboard' && (
+        {view === 'dashboard' && election && (
           <div className="space-y-4">
             <p className="text-xs text-muted-foreground uppercase tracking-widest">
               {election.label} — 政党別 達成状況
@@ -640,7 +582,16 @@ export function AdministrationTracker() {
               />
             ))}
 
-            {election.parties.every((p) => p.administration_id === null) && (
+            {election.parties.length === 0 && (
+              <div className="py-16 text-center">
+                <p className="text-muted-foreground text-sm">
+                  {election.label}の公約データはまだ準備中です
+                </p>
+                <p className="text-muted-foreground/50 text-xs mt-2">順次追加予定です</p>
+              </div>
+            )}
+
+            {election.parties.length > 0 && election.parties.every((p) => p.administration_id === null) && (
               <div className="py-16 text-center">
                 <p className="text-muted-foreground text-sm">
                   {election.label}の公約データはまだ準備中です

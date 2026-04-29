@@ -107,7 +107,7 @@ export async function GET(req: NextRequest) {
       .select(
         `pledge_id, pledge_text, party_id, category, final_status,
          best_score, best_bill_id, all_bill_ids, achieved_elements,
-         missing_elements, reasoning, needs_review, review_reason, updated_at`,
+         missing_elements, reasoning, needs_review, review_reason, updated_at, sources`,
         { count: "exact" }
       )
       .range(offset, offset + limit - 1);
@@ -159,6 +159,7 @@ export async function GET(req: NextRequest) {
       needs_review: Boolean(row.needs_review),
       review_reason: row.review_reason ?? null,
       updated_at: row.updated_at ?? "",
+      sources: row.sources ?? [],
     }));
 
     // ── サマリークエリ（status/needs_review フィルタ除外）──

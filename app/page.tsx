@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PledgeTrackerPage from './(app)/pledge_tracker/page';
+import RepairPage from './repair';
 
 export default function Home() {
   const router = useRouter()
@@ -20,7 +21,13 @@ export default function Home() {
 
   return (
     <>
-      <PledgeTrackerPage />
+      {false && (
+        <RepairPage />
+      )}
+      
+      {true && (
+        <PledgeTrackerPage />
+      )}
       {/*
         <div className="pt-70">
          <div className="text-center space-y-6">
