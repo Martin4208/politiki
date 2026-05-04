@@ -21,13 +21,18 @@ GEMINI_EMBEDDING_URL_BATCH = (
 )
 EMBEDDING_DIMENSIONS = 768
 API_BATCH_SIZE = 40  # 400エラー回避のため100を上限とする
-DB_CONFIG = {
-    "host": "localhost",
-    "database": "db",
-    "user": "user",
-    "password": "password",
-    "port": "5432"
-}
+# DB_CONFIG = {
+#     "host": "localhost",
+#     "database": "db",
+#     "user": "user",
+#     "password": "password",
+#     "port": "5432"
+# }
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL が .env に設定されていません")
+
 
 
 def extract_submitted_session_number(bill_id: str) -> int | None:
@@ -240,7 +245,7 @@ def process_and_embed_bill_content(
     with open(INPUT_FILE, 'r', encoding='utf-8') as f:
         bills_content = json.load(f)
         
-    conn = psycopg2.connect(**DB_CONFIG)
+    conn = psycopg2.connect(DATABASE_URL)
     cur  = conn.cursor()
 
     results = []
