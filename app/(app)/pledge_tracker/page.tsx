@@ -7,7 +7,7 @@ import { AdministrationTracker } from '@/features/tracker/pledge/AdministrationT
 // Modal
 const STORAGE_KEY = 'pledge-tracker-storage-key'
 
-function Modal({ onClose }: { onclose: () => void }) {
+function Modal({ onClose }: { onClose: () => void }) {
   const [closing, setClosing] = useState(false);
 
   const handleClose = () => {
