@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTracker } from './useTracker';
+import { useTracker } from './hooks/useTracker';
 import { parties } from '@/lib/parties';
 import type { PledgeTrackerItem, FinalStatus } from '@/app/api/tracker/route';
 

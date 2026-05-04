@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 
-import { useTracker } from './hooks/useTracker';
-import { useElections } from './hooks/useElections';
-import type { ElectionParty } from './hooks/useElections';
+import { useTracker } from '../hooks/useTracker';
+import { useElections } from '../hooks/useElections';
+import type { ElectionParty } from '../hooks/useElections';
 import { STATUS, ALL_STATUSES } from './constants/status';
 import { DisclaimerBanner } from './components/DisclaimerBanner';
 import { PartyDashboardCard } from './components/PartyDashboardCard';
