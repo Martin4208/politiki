@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------
 // 政党ダッシュボードカード
 // ---------------------------------------------------------------------------
-import { useTracker } from '../hooks/useTracker';
+import { useTracker } from '../../hooks/useTracker';
 import { STATUS, ALL_STATUSES } from '../constants/status';
 import { MiniRing } from './MiniRing';
 import type { ElectionParty } from '../hooks/useElections';
