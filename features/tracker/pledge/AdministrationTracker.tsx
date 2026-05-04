@@ -13,7 +13,7 @@ import { DetailPanel } from './components/DetailPanel';
 import { SearchFilter } from './components/SearchFilter';
 import type { View } from './types';
 import type { PledgeTrackerItem, FinalStatus } from '@/app/api/tracker/route';
-import { administrations } from '../../lib/administrations';
+import { administrations } from '@/lib/administrations';
 
 // ---------------------------------------------------------------------------
 // メインコンポーネント

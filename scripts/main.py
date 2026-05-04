@@ -29,7 +29,6 @@ def run():
     
     # Get and save the content of bills as JSON
     get_content(
-        START=latest_session,
         INPUT_FILE=BASE_PATH+'/bills/bills.json',
         STEP1_OUTPUT_FILE=BASE_PATH+'/content/content_links.json',
         OUTPUT_FILE=BASE_PATH+'/content/content.json'
@@ -37,7 +36,6 @@ def run():
     
     # Get and save the progress of bills as JSON
     get_progress(
-        START=latest_session,
         INPUT_FILE=BASE_PATH+'/bills/bills.json',
         STEP1_OUTPUT_FILE=BASE_PATH+'/progress/progress_links.json',
         OUTPUT_FILE=BASE_PATH+'/progress/progress.json'
