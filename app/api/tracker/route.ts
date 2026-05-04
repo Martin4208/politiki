@@ -2,7 +2,7 @@
  * app/api/tracker/route.ts
  *
  * GET /api/tracker
- *   ?administration=104
+ *   ?administration=105
  *   &party_id=1
  *   &category=economy
  *   &status=achieved,in_progress
@@ -39,7 +39,8 @@ export interface PledgeTrackerItem {
   needs_review: boolean;
   review_reason: string | null;
   updated_at: string;
-  sources?: { label: string; url: string }[];
+  sources?: { label: string; url: string; is_best: boolean }[];
+  unverifiable_elements?: string[];
 }
 
 export interface PledgeTrackerResponse {
@@ -57,6 +58,7 @@ export interface StatusSummary {
   regressive: number;
   unstarted: number;
   needs_review: number;
+  avg_score: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -64,11 +66,11 @@ export interface StatusSummary {
 // ---------------------------------------------------------------------------
 
 const STATUS_ORDER: Record<FinalStatus, number> = {
-  regressive: 1,
-  achieved: 2,
-  in_progress: 3,
-  partial: 4,
-  unstarted: 5,
+  achieved: 1,
+  in_progress: 2,
+  partial: 3,
+  unstarted: 4,
+  regressive: 5,
 };
 // ---------------------------------------------------------------------------
 // GET ハンドラ
@@ -128,9 +130,11 @@ export async function GET(req: NextRequest) {
       query = query.eq("needs_review", needs_review);
     }
 
-    // Supabase JS では CASE 式の ORDER BY は使えないので、
-    // best_score の降順だけ DB 側で行い、status 順はクライアントでソート
-    query = query.order("best_score", { ascending: false });
+    // クエリの順序指定
+    query = query
+      .order("final_status", { ascending: true })
+      .order("best_score", { ascending: false })   
+      .order("pledge_id", { ascending: true });
 
     const { data, count, error } = await query;
 
@@ -159,13 +163,20 @@ export async function GET(req: NextRequest) {
       needs_review: Boolean(row.needs_review),
       review_reason: row.review_reason ?? null,
       updated_at: row.updated_at ?? "",
-      sources: row.sources ?? [],
+      sources: (row.sources ?? []).map((src: { label: string; url: string }) => {
+        const match = src.url.match(/\/([^/]+)\.htm$/);
+        const code = match?.[1] ?? "";
+        return {
+          ...src,
+          is_best: code === row.best_bill_id,
+        };
+      }),
     }));
 
     // ── サマリークエリ（status/needs_review フィルタ除外）──
     let summaryQuery = supabase
       .from("pledge_tracker")
-      .select("final_status, needs_review");
+      .select("final_status, needs_review, best_score");
 
     if (administration !== undefined) {
       summaryQuery = summaryQuery.eq("administration_id", administration);
@@ -187,13 +198,23 @@ export async function GET(req: NextRequest) {
       regressive: 0,
       unstarted: 0,
       needs_review: 0,
+      avg_score: 0,
     };
+
+    let scoreSum = 0;
+    let scoreCount = 0;
 
     for (const row of summaryData ?? []) {
       const fs = row.final_status as FinalStatus;
       if (fs in summary) summary[fs]++;
       if (row.needs_review) summary.needs_review++;
+      if (row.best_score != null) {
+        scoreSum += Number(row.best_score);
+        scoreCount++;
+      }
     }
+
+    summary.avg_score = scoreCount > 0 ? Math.round(scoreSum / scoreCount) : 0;
 
     // ── レスポンス ────────────────────────────────────────
     const response: PledgeTrackerResponse = {

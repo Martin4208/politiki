@@ -2,9 +2,8 @@
  
 import { useRouter } from 'next/navigation';
 import { ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/button';
  
-export default function About() {
+export default function AboutPage() {
   const router = useRouter();
  
   return (
@@ -19,18 +18,15 @@ export default function About() {
         </button>
         {/* Hero */}
         <div>
-          <p className="text-xs text-muted-foreground tracking-[0.2em] uppercase mb-3">About</p>
+          
           <h1 className="text-3xl font-bold tracking-tight">POLITIKIについて</h1>
-          {/* <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
-            政治をもっと身近に、もっと透明に。
-          </p> */}
         </div>
  
         {/* Mission */}
         <section className="space-y-3">
           <h2 className="text-lg font-bold">目標</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            POLITIKIは、政治の透明性を高め、有権者が根拠に基づいて判断できる社会を目指すプラットフォームです。
+            当サイトは、各党の公約と実際に提出されている法案を比較することで、どの程度公約が実現されているかを確認できるサイトです。
           </p>
         </section>
 
@@ -38,15 +34,6 @@ export default function About() {
         <section className="space-y-4">
             <h2 className="text-lg font-bold">引用</h2>
             <div className="grid grid-cols-1 gap-3">
-                <a 
-                    href="https://www.jimin.jp/policy/seisaku_bank/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-4 rounded-xl border bg-card hover:bg-accent transition-colors"
-                >
-                    <p className="text-sm font-medium">自民党の政策BANK</p>
-                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
-                </a>
                 <a 
                     href="https://www.kantei.go.jp/jp/rekidainaikaku/index.html"
                     target="_blank" 
@@ -78,6 +65,12 @@ export default function About() {
                 政権の公約と国会に提出された法案をAIが照合し、達成度をスコア化。
                 達成・部分達成・未着手・逆行の4段階で評価し、根拠を併記します。
               </p>
+              <button
+                onClick={() => router.push('/about/evaluation')}
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm border hover:bg-accent transition-colors hover:cursor-pointer"
+              >
+               ↳評価について
+              </button>
             </div>
             {/* <div className="p-4 rounded-xl border">
               <h3 className="font-bold text-sm">政治診断</h3>
@@ -124,6 +117,26 @@ export default function About() {
             <div className="pt-3 space-y-1.5">
               <h3 className="text-sm font-bold flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40" />
+                記載されている政党について
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed pl-3.5">
+                アプリが現状開発中ということもあり、全ての政党の全てのデータを載せられているわけではありません。ご了承ください。
+              </p>
+            </div>
+
+            <div className="pt-3 space-y-1.5">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40" />
+                公約データについて
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed pl-3.5">
+                公約データの著作権は各政党に帰属します。当サイトは比較・分析の便宜を図るものであり、正確な情報の確認には各党の公式サイトをご参照ください。
+              </p>
+            </div>
+
+            <div className="pt-3 space-y-1.5">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40" />
                 Cookieについて
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed pl-3.5">
@@ -152,8 +165,11 @@ export default function About() {
             POLITIKIは特定の政党・政治家・政策を支持または推薦するものではありません。
             すべての評価は公開データとアルゴリズムに基づいて自動的に行われます。
           </p>
+          <p  className="text-sm text-muted-foreground leading-relaxed">
+            また、AIの評価基準などについては公平性のため、記載することを検討しています。準備が整い次第、記載をいたします。
+          </p>
         </section>
- 
+
         {/* Status */}
         <section className="p-4 rounded-xl border bg-muted/30 space-y-2">
           <h2 className="text-sm font-bold">現在のステータス</h2>
