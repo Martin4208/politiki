@@ -37,8 +37,17 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/backend
-/data
+**/data/
+**/__pycache__/
+
+**/data/
+**/__pycache__/
+
+# 個別のJSONデータファイル
+*.json
+# ただしpackage系は除外しない
+!package.json
+!package-lock.json
 
 # other
 dump.sql
