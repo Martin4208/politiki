@@ -1,6 +1,6 @@
-from ..backend.currently_working.bill.etl.extract import get_bills, get_content, get_diet_session, get_progress
-from ..backend.currently_working.bill.etl.transform import clean_content, add_status, process_and_embed_bill_content
-from ..backend.currently_working.bill.etl.load import save_bills, save_diet_sessions, save_bills_content, save_bills_progress
+from backend.currently_working.bill.etl.extract import get_bills, get_content, get_diet_session, get_progress
+from backend.currently_working.bill.etl.transform import clean_content, add_status, process_and_embed_bill_content
+from backend.currently_working.bill.etl.load import save_bills, save_diet_sessions, save_bills_content, save_bills_progress
 
 """
 /data：取得したデータの保管場所
@@ -11,7 +11,7 @@ main.py：それぞれの関数を呼ぶ場所（ここに来ればデータ取�
 """
 
 def run():
-    BASE_PATH='../backend/currently_working/bill/data/github_actions'
+    BASE_PATH='backend/currently_working/bill/data/github_actions'
     # 1. Get and save the data
     # Get and save diet session data
     latest_session = get_diet_session(
