@@ -20,6 +20,13 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Create data directories
+        run: |
+          mkdir -p backend/currently_working/bill/data/github_actions/diet_session
+          mkdir -p backend/currently_working/bill/data/github_actions/bills
+          mkdir -p backend/currently_working/bill/data/github_actions/content
+          mkdir -p backend/currently_working/bill/data/github_actions/progress
+
       - name: Run script
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
