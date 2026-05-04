@@ -18,6 +18,7 @@ def run():
         OUTPUT_FILE=BASE_PATH+'/diet_session/diet_session.json', 
         GITHUB_ACTIONS=True
     )
+    latest_session = int(latest_session)
     print(f"Latest diet session is {latest_session}")
     
     # Get and save bills as JSON
