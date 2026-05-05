@@ -133,7 +133,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-
+      <meta name="google-site-verification" content="cZVEl21DlvHwPm7gTck1PkPWpcf1U343h_O3m7PMPwY" />
       <body>
         <Theme>
           <AuthProvider>
