@@ -16,7 +16,6 @@ export function PartyDashboardCard({
   party: ElectionParty;
   onClick: () => void;
 }) {
-  // administration_id の有無に関わらず、party_id でフェッチ
   const filter = party.administration_id !== null 
     ? {
         administration: party.administration_id,

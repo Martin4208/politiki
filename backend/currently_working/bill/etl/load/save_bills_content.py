@@ -41,7 +41,11 @@ def save_bills_content(INPUT_FILE):
     skip_count    = 0
 
     try:
-        bill_codes_res = supabase.table("bills").select("bill_code").execute()
+        target_codes = [bill.get("bill_id") for bill in bills if bill.get("bill_id")]
+        bill_codes_res = supabase.table("bills") \
+            .select("bill_code") \
+            .in_("bill_code", target_codes) \
+            .execute()
         existing_codes = set(row["bill_code"] for row in bill_codes_res.data)
             
         for bill in bills:

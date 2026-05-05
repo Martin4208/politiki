@@ -40,17 +40,18 @@ def save_bills(INPUT_FILE='./data/bills/bills.json'):
     
     try:
         insert_data = [
-            (
-                b.get('category'),
-                b.get('current_session_number'),
-                b.get('submitted_session_number'),
-                b.get('bill_number'),
-                b.get('title'),
-                b.get('status'),
-                b.get('progress_url'),
-                b.get('content_url'),
-                b.get('bill_code')
-            ) for b in bills
+            {
+                "category": b.get("category"),
+                "current_session_number": b.get("current_session_number"),
+                "submitted_session_number": b.get("submitted_session_number"),
+                "bill_number": b.get("bill_number"),
+                "title": b.get("title"),
+                "status": b.get("status"),
+                "progress_url": b.get("progress_url"),
+                "content_url": b.get("content_url"),
+                "bill_code": b.get("bill_code"),
+            }
+            for b in bills
         ]
         
         print(f"📥 {len(insert_data)} 件の法案データをインポート中...")
@@ -68,7 +69,7 @@ def save_bills(INPUT_FILE='./data/bills/bills.json'):
             batch = insert_data[i:i+BATCH_SIZE]
             supabase.table("bills").upsert(
                 batch,
-                on_conflict="bill_code"
+                on_conflict="category,submitted_session_number,bill_number"
             ).execute()
         
         print(f"✅ Saved {len(bills)} chunks to DB.")

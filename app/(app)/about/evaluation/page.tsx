@@ -23,7 +23,7 @@ export default function Evaluation() {
                             達成
                         </h3>
                         <p className="text-xs text-muted-foreground leading-relaxed pl-3.5">
-                            法案が成立し、かつ公約の主要要素をカバーしている
+                            法案が成立し、かつ公約の主要要素をカバーしている。
                         </p>
                     </div>
 
@@ -33,7 +33,7 @@ export default function Evaluation() {
                             進行中
                         </h3>
                         <p className="text-xs text-muted-foreground leading-relaxed pl-3.5">
-                            関連法案はあるが、まだ成立していない（審議中・未了）
+                            関連法案はあるが、まだ成立していない（審議中など）。
                         </p>
                     </div>
 
@@ -43,7 +43,7 @@ export default function Evaluation() {
                             一部達成
                         </h3>
                         <p className="text-xs text-muted-foreground leading-relaxed pl-3.5">
-                            法案は成立したが、公約の一部しかカバーしていない
+                            法案は成立したが、公約の一部しかカバーしていない。
                         </p>
                     </div>
 
@@ -53,7 +53,7 @@ export default function Evaluation() {
                             未着手
                         </h3>
                         <p className="text-xs text-muted-foreground leading-relaxed pl-3.5">
-                            関連する法案自体が存在しない
+                            関連する法案自体が存在しない。
                         </p>
                     </div>
 
@@ -63,7 +63,7 @@ export default function Evaluation() {
                             逆行
                         </h3>
                         <p className="text-xs text-muted-foreground leading-relaxed pl-3.5">
-                            公約と逆方向の法案
+                            公約と逆方向の法案。
                         </p>
                     </div>
                 </div>

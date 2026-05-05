@@ -19,6 +19,9 @@ export function DisclaimerBanner() {
             {' '}評価精度は改善を重ねていますが、誤りや見落としが含まれる可能性があります。
             あくまで参考情報としてご利用ください。各法案のURLは詳細ページの下部にあり、各公約のURLは「データについて」にありますので、ご自身でもご確認をお願いします。
           </p>
+          <p className="text-xs text-amber-600 dark:text-amber-400 leading-relaxed">
+            また、衆議院選挙のみのデータなので、参議院で提出されているものは現在カウントしていません。
+          </p>
         </div>
         <button
           onClick={() => setDismissed(true)}

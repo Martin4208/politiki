@@ -41,9 +41,10 @@ def parse_row(cells, en_category, category, current_session_number):
         title     = f"[{bill_type}] {cells[2].get_text(strip=True)}"
         status    = cells[3].get_text(strip=True)
         p_href    = _extract_href(cells[4].find('a'))
+        c_href    = _extract_href(cells[5].find('a'))
         return _build(category, current_session_number, submitted,
                       None, title, status,
-                      _to_url(p_href), "", _to_bill_code(p_href))
+                      _to_url(p_href), "", _to_bill_code(c_href))
 
     elif en_category == "SHODAKU":
         # 提出回次 | 議案件名 | 審議状況 | 経過情報  (番号列なし)
@@ -53,9 +54,10 @@ def parse_row(cells, en_category, category, current_session_number):
         title     = cells[1].get_text(strip=True)
         status    = cells[2].get_text(strip=True)
         p_href    = _extract_href(cells[3].find('a'))
+        c_href    = _extract_href(cells[5].find('a'))
         return _build(category, current_session_number, submitted,
                       None, title, status,
-                      _to_url(p_href), "", _to_bill_code(p_href))
+                      _to_url(p_href), "", _to_bill_code(c_href))
 
     elif en_category == "DONT_HAVE_CONTENT_COL":
         # 提出回次 | 番号 | 議案件名 | 審議状況 | 経過情報  (本文列なし)
@@ -66,9 +68,10 @@ def parse_row(cells, en_category, category, current_session_number):
         title     = cells[2].get_text(strip=True)
         status    = cells[3].get_text(strip=True)
         p_href    = _extract_href(cells[4].find('a'))
+        c_href    = _extract_href(cells[5].find('a'))
         return _build(category, current_session_number, submitted,
                       bill_num, title, status,
-                      _to_url(p_href), "", _to_bill_code(p_href))
+                      _to_url(p_href), "", _to_bill_code(c_href))
 
     else:  # HAS_CONTENT_COL
         # 提出回次 | 番号 | 議案件名 | 審議状況 | 経過情報 | 本文情報
@@ -82,7 +85,7 @@ def parse_row(cells, en_category, category, current_session_number):
         c_href    = _extract_href(cells[5].find('a'))
         return _build(category, current_session_number, submitted,
                       bill_num, title, status,
-                      _to_url(p_href), _to_url(c_href), _to_bill_code(p_href))
+                      _to_url(p_href), _to_url(c_href), _to_bill_code(c_href))
         
         
 def _build(category, current_session, submitted, bill_num_raw, title, status, p_url, c_url, bill_code):
@@ -102,6 +105,7 @@ def _build(category, current_session, submitted, bill_num_raw, title, status, p_
         "status": status,
         "progress_url": p_url,
         "content_url": c_url,
+        "bill_code": bill_code
     }
     
 def _extract_href(a_tag) -> str:
@@ -175,7 +179,7 @@ def download_from_urls(url_list: list) -> tuple:
     return all_bills
 
 
-def get_bills(START, END=None, OUTPUT_FILE="'./data/bills/bills.json'"):
+def get_bills(START, END=None, OUTPUT_FILE='./data/bills/bills.json'):
     if END is None:
         END = START
     

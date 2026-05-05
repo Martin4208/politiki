@@ -156,8 +156,20 @@ export function AdministrationTracker() {
             </p>
             {election.parties
               .filter((party) => !["立憲民主党（新）", "公明党"].includes(party.party_name))
-              .map((party) => (
+              .sort((a, b) => {
+                // 1. administration_id がある方を上に
+                const aHasAdmin = a.administration_id != null ? 1 : 0;
+                const bHasAdmin = b.administration_id != null ? 1 : 0;
+                if (bHasAdmin !== aHasAdmin) return bHasAdmin - aHasAdmin;
+
+                // 2. データが無い（achievement_rate が 0 or null）ものは下に
+                const aHasData = (a.achievement_rate ?? 0) > 0 ? 1 : 0;
+                const bHasData = (b.achievement_rate ?? 0) > 0 ? 1 : 0;
+                if (bHasData !== aHasData) return bHasData - aHasData; 
+
                 
+              })
+              .map((party) => (
                 <PartyDashboardCard
                   key={party.party_id}
                   party={party}

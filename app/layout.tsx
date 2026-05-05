@@ -17,7 +17,7 @@ const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://politiki.jp').rep
 const SITE_NAME = 'POLITIKI';
 
 const DESCRIPTION_JA =
-  '質問に答えて自分の政治的立場を可視化。経済・外交・社会政策などの分野で、あなたの考えが各政党とどれくらい近いかを比較できます。';
+  'POLITIKIは、選挙で掲げた公約が次の選挙までどのくらい達成されているかを確認できます。';
 
 const DESCRIPTION_EN =
   'Find out where you stand politically. Compare your views with major political parties and explore your ideological position.';
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
 
   title: {
-    default: `${SITE_NAME} – 公約トラッカー`,
+    default: `公約トラッカー - ${SITE_NAME}`,
     template: `%s | ${SITE_NAME}`,
   },
 
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
 
   /* ── Open Graph（POLITIKI に統一） ── */
   openGraph: {
-    title: `${SITE_NAME} – 政治ポジション診断 & 公約トラッカー`,
+    title: `${SITE_NAME} – 政党の公約達成率を比較`,
     description: DESCRIPTION_JA,
     url: SITE_URL,
     siteName: SITE_NAME,
