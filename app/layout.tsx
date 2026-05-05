@@ -141,7 +141,7 @@ export default function RootLayout({
               {/* <Sidebar /> */}
               <div className="flex flex-col h-full w-full overflow-hidden">
                 <Header />
-                <main className="flex-1 w-full h-screen overflow-hidden">
+                <main className="flex-1 overflow-auto">
                   {children}
                 </main>
               </div>
