@@ -160,6 +160,7 @@ export function AdministrationTracker() {
                 const aHasAdmin = a.administration_id != null ? 1 : 0;
                 const bHasAdmin = b.administration_id != null ? 1 : 0;
                 if (bHasAdmin !== aHasAdmin) return bHasAdmin - aHasAdmin;
+                return 0;
               })
               .map((party) => (
                 <PartyDashboardCard
