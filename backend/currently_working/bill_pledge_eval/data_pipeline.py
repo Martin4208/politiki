@@ -393,7 +393,7 @@ class DataPipeline:
                 1 - (COALESCE(bc.outline_vector, bc.bill_vector) <=> %s::vector) AS similarity
             FROM bill_content bc
             JOIN bills b ON b.bill_code = bc.bill_id
-            LEFT JOIN bill_progress bp ON bp.bill_id::text = b.bill_code
+            LEFT JOIN bill_progress bp ON bp.bill_id = b.id
             WHERE b.submitted_session_number >= %s
             AND (%s IS NULL OR b.submitted_session_number <= %s)
             AND COALESCE(bc.outline_vector, bc.bill_vector) IS NOT NULL
