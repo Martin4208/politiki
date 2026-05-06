@@ -173,3 +173,19 @@
   --background: 222.2 84% 4.9%; /* ここが黒系の色になっているか */
   --foreground: 210 40% 98%; /* ここが白系の色になっているか */
 }
+
+/* タブレット以上 */
+@media (min-width: 768px) {
+  .container {
+    padding: 24px;
+    flex-direction: row;
+  }
+}
+
+/* PC以上 */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}

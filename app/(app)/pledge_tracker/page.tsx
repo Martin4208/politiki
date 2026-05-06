@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AdministrationTracker } from '@/features/tracker/pledge/AdministrationTracker';
 
 
@@ -9,6 +9,22 @@ const STORAGE_KEY = 'pledge-tracker-storage-key'
 
 function Modal({ onClose }: { onClose: () => void }) {
   const [closing, setClosing] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // モーダルが開いたらフォーカスを移動
+  useEffect(() => {
+    const btn = modalRef.current?.querySelector('button');
+    btn?.focus();
+  }, []);
+
+  // 背後の要素をinertにする
+  useEffect(() => {
+    const mainContent = document.getElementById('main-layout');
+    if (mainContent) {
+      mainContent.setAttribute('inert', '');
+      return () => mainContent.removeAttribute('inert');
+    }
+  }, []);
 
   const handleClose = () => {
     setClosing(true);
@@ -20,8 +36,10 @@ function Modal({ onClose }: { onClose: () => void }) {
 
     return (
     <div
+      ref={modalRef}
       className={`
-        fixed inset-0 z-100 flex items-center justify-center p-4
+        fixed inset-0 z-100 flex items-center justify-center
+        p-2 sm:p-4
         transition-opacity duration-200
         ${closing ? 'opacity-0' : 'opacity-100'}
       `}
@@ -35,12 +53,13 @@ function Modal({ onClose }: { onClose: () => void }) {
         className={`
           relative w-full max-w-lg bg-background border border-border
           rounded-2xl shadow-2xl overflow-hidden
+          max-h-[90vh] overflow-y-auto
           transition-all duration-200
           ${closing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}
         `}
       >
         {/* ヘッダー */}
-        <div className="px-6 pt-6 pb-4">
+        <div className="px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4">
           <h2 className="text-xl font-bold tracking-tight">
             公約トラッカーへようこそ
           </h2>
@@ -50,7 +69,7 @@ function Modal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* 本文 */}
-        <div className="px-6 pb-6 space-y-4">
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-3 sm:space-y-4">
 
           <p className="text-sm text-muted-foreground leading-relaxed">
             本サービスは、各政党の選挙公約が国会に提出された法案によって
@@ -65,7 +84,7 @@ function Modal({ onClose }: { onClose: () => void }) {
               <li className="text-xs text-muted-foreground leading-relaxed flex gap-2">
                 <span className="shrink-0 mt-0.5">•</span>
                 <span>
-                  現在、<span className="font-medium text-foreground">2024年 第50回衆議院議員総選挙</span>までのデータを掲載しています。
+                  現在、<span className="font-medium text-foreground">2026年 第51回衆議院議員総選挙</span>のデータのみを掲載しています。
                   新しい選挙や国会会期のデータは随時追加していきます。
                 </span>
               </li>
@@ -124,7 +143,7 @@ function Modal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* フッター */}
-        <div className="px-6 pb-6">
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6">
           <button
             onClick={handleClose}
             className="
@@ -165,40 +184,42 @@ export default function PledgeTrackerPage() {
 
   return (
     <div className="h-screen overflow-hidden flex">
-      {/* Sidebar */}
-      <div className="w-48 shrink-0 border-r flex flex-col bg-background">
-        <nav className="flex-1 px-3 py-4 space-y-5">
-          {TABS.map((group) => (
-            <div key={group.group}>
-              <div className="space-y-0.5">
-                {group.items.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveId(item.id)}
-                    className={`
-                      w-full flex flex-col items-start gap-1 px-4 py-3 rounded-lg cursor-pointer
-                      text-left transition-all duration-200
-                      ${activeId === item.id
-                        ? 'bg-foreground text-background shadow-md scale-[1.02]' // 選択時に少し大きく
-                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'}
-                    `}
-                  >
-                    <span className="text-base font-bold leading-tight">
-                      {item.label}
-                    </span>
-                  </button>
-                ))}
+      <div id="main-layout" className="contents">
+        {/* Sidebar */}
+        <div className="hidden sm:flex w-48 shrink-0 border-r flex-col bg-background">
+          <nav className="flex-1 px-3 py-4 space-y-5">
+            {TABS.map((group) => (
+              <div key={group.group}>
+                <div className="space-y-0.5">
+                  {group.items.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveId(item.id)}
+                      className={`
+                        w-full flex flex-col items-start gap-1 px-4 py-3 rounded-lg cursor-pointer
+                        text-left transition-all duration-200
+                        ${activeId === item.id
+                          ? 'bg-foreground text-background shadow-md scale-[1.02]' // 選択時に少し大きく
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent'}
+                      `}
+                    >
+                      <span className="text-base font-bold leading-tight">
+                        {item.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-        </nav>
+            ))}
+          </nav>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 overflow-hidden">
+          {activeId === 1 && <AdministrationTracker />}
+        </div>
       </div>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-hidden">
-        {activeId === 1 && <AdministrationTracker />}
-      </main>
-
+      
       {/* Modal */}
       {showIntro && <Modal onClose={() => setShowIntro(false)} />}
     </div>
