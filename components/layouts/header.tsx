@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/providers/auth-provider';
@@ -7,31 +8,28 @@ import { useAuth } from '@/providers/auth-provider';
 export function Header() {
     const router = useRouter();
     const { user } = useAuth();
+    const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <header className="flex items-center justify-between px-6 py-4 border-b bg-white">
-            {/* 左側：ロゴ */}
-            <Button 
-                variant="ghost"
-                className="text-2xl font-bold tracking-wider hover:bg-transparent p-0 h-auto"
-                onClick={() => router.push('/')}
-            >
-                POLITIKI
-            </Button>
+        <header className="relative border-b bg-white">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
+                {/* ロゴ */}
+                <Button
+                    variant="ghost"
+                    className="text-xl sm:text-2xl font-bold tracking-wider hover:bg-transparent p-0 h-auto"
+                    onClick={() => router.push('/')}
+                >
+                    POLITIKI
+                </Button>
 
-            <div className="flex gap-6">
-                {/* 右側：データについて */}
-                <div>
+                {/* PC: 横並びボタン */}
+                <div className="hidden sm:flex gap-4">
                     <Button
                         onClick={() => router.push('/about/data')}
                         className="text-sm font-medium bg-black hover:bg-gray-800 transition-colors"
                     >
                         データについて
                     </Button>
-                </div>
-            
-                {/* 右側：本アプリについて */}
-                <div>
                     <Button
                         onClick={() => router.push('/about')}
                         className="text-sm font-medium bg-black hover:bg-gray-800 transition-colors"
@@ -39,35 +37,38 @@ export function Header() {
                         このアプリについて
                     </Button>
                 </div>
+
+                {/* スマホ: ハンバーガー */}
+                <button
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    className="sm:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                    aria-label="メニュー"
+                >
+                    <div className="flex flex-col justify-center gap-1.5 w-5 h-5">
+                        <span className={`block h-0.5 w-full bg-black transition-all duration-200 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+                        <span className={`block h-0.5 w-full bg-black transition-all duration-200 ${menuOpen ? 'opacity-0' : ''}`} />
+                        <span className={`block h-0.5 w-full bg-black transition-all duration-200 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+                    </div>
+                </button>
             </div>
-            
-            
 
-            {/* 右側：ボタン群 */}
-            {false && (
-                <>
-                {user ? (
-                ''
-            ) : (
-                <div className="flex items-center gap-6">
-                    <Button
-                        onClick={() => router.push('/login')}
-                        className="text-sm font-medium bg-black hover:bg-gray-800 transition-colors"
+            {/* スマホ: ドロップダウンメニュー */}
+            {menuOpen && (
+                <div className="sm:hidden border-t bg-white px-4 py-2">
+                    <button
+                        onClick={() => { router.push('/about/data'); setMenuOpen(false); }}
+                        className="w-full text-left px-3 py-3 text-sm rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                        ログイン
-                    </Button>
-
-                    <Button
-                        onClick={() => router.push('/register')}
-                        className="px-4 py-2 text-sm font-medium text-white bg-black rounded-md hover:bg-gray-800 transition-colors"
+                        データについて
+                    </button>
+                    <button
+                        onClick={() => { router.push('/about'); setMenuOpen(false); }}
+                        className="w-full text-left px-3 py-3 text-sm rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                        新規登録
-                    </Button>
+                        このアプリについて
+                    </button>
                 </div>
             )}
-                </>
-            )}
-            
         </header>
-    )
+    );
 }

@@ -14,6 +14,7 @@ import { SearchFilter } from './components/SearchFilter';
 import type { View } from './types';
 import type { PledgeTrackerItem, FinalStatus } from '@/app/api/tracker/route';
 import { administrations } from '@/lib/administrations';
+import ChangePasswordPage from '../../../app/(auth)/change_password/page';
 
 // ---------------------------------------------------------------------------
 // メインコンポーネント
@@ -26,6 +27,7 @@ export function AdministrationTracker() {
   const [selectedPartyId, setSelectedPartyId] = useState<number | null>(null);
   const [activeStatus, setActiveStatus] = useState<FinalStatus | null>(null);
   const [page, setPage] = useState(1);
+  const [pageInput, setPageInput] = useState(1);
   const [selectedPledge, setSelectedPledge] = useState<PledgeTrackerItem | null>(null);
 
   // 初回ロード時に最新の選挙を選択
@@ -34,6 +36,10 @@ export function AdministrationTracker() {
       setSelectedElectionId(elections[0].id);
     }
   }, [elections, selectedElectionId]);
+
+  useEffect(() => {
+    setPageInput(String(page));
+  }, [page]);
 
   const election = elections.find((e) => e.id === selectedElectionId) ?? null;
   const selectedParty = election?.parties.find((p) => p.party_id === selectedPartyId) ?? null;
@@ -77,6 +83,14 @@ export function AdministrationTracker() {
   const changePage = (newPage: number) => {
     setPage(newPage);
     containerRef.current?.scroll({ top: 0, behavior: 'smooth' });
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const maxPage = Math.ceil(data!.total / data!.limit);
+      const num = Math.min(Math.max(1, parseInt(pageInput) || 1), maxPage);
+      changePage(num);
+    }
   }
 
   // ローディング / エラー
@@ -247,13 +261,33 @@ export function AdministrationTracker() {
                   <div className="flex items-center justify-between mt-8 text-xs text-muted-foreground">
                     <button
                       disabled={page <= 1}
+                      onClick={() => changePage(1)}
+                      className="hover:text-foreground hover:cursor-pointer disabled:opacity-20 transition-colors"
+                    >
+                      ← 最初のページ
+                    </button>
+                    <button
+                      disabled={page <= 1}
                       onClick={() => changePage(page - 1)}
                       className="hover:text-foreground hover:cursor-pointer disabled:opacity-20 transition-colors"
                     >
                       ← 前
                     </button>
                     <span className="tabular-nums">
-                      {page} / {Math.ceil(data.total / data.limit)}
+                      <input 
+                        type="text" 
+                        value={pageInput} 
+                        onChange={(e) => setPageInput(e.target.value)} 
+                        onKeyDown={handleKeyDown} 
+                        onBlur={() => {
+                          if (data) {
+                            const maxPage = Math.ceil(data.total / data.limit);
+                            const num = Math.min(Math.max(1, parseInt(pageInput) || 1), maxPage);
+                            changePage(num);
+                          }
+                        }}
+                        className="w-10 text-center border border-border rounded px-1 py-0.5 bg-transparent"
+                      /> / {Math.ceil(data.total / data.limit)}
                       <span className="ml-2 opacity-50">({data.total}件)</span>
                     </span>
                     <button
@@ -262,6 +296,13 @@ export function AdministrationTracker() {
                       className="hover:text-foreground hover:cursor-pointer disabled:opacity-20 transition-colors"
                     >
                       次 →
+                    </button>
+                    <button
+                      disabled={page >= Math.ceil(data.total / data.limit)}
+                      onClick={() => changePage(Math.ceil(data.total / data.limit))}
+                      className="hover:text-foreground hover:cursor-pointer disabled:opacity-20 transition-colors"
+                    >
+                      最後のページ →
                     </button>
                   </div>
                 )}
