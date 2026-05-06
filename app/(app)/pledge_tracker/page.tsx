@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AdministrationTracker } from '@/features/tracker/pledge/AdministrationTracker';
 
 
@@ -9,6 +9,7 @@ const STORAGE_KEY = 'pledge-tracker-storage-key'
 
 function Modal({ onClose }: { onClose: () => void }) {
   const [closing, setClosing] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   // モーダルが開いたらフォーカスを移動
   useEffect(() => {
@@ -35,6 +36,7 @@ function Modal({ onClose }: { onClose: () => void }) {
 
     return (
     <div
+      ref={modalRef}
       className={`
         fixed inset-0 z-100 flex items-center justify-center
         p-2 sm:p-4
@@ -182,7 +184,7 @@ export default function PledgeTrackerPage() {
 
   return (
     <div className="h-screen overflow-hidden flex">
-      <div id="main-layout" classname="contents">
+      <div id="main-layout" className="contents">
         {/* Sidebar */}
         <div className="hidden sm:flex w-48 shrink-0 border-r flex-col bg-background">
           <nav className="flex-1 px-3 py-4 space-y-5">
