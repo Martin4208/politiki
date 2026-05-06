@@ -84,7 +84,7 @@ function Modal({ onClose }: { onClose: () => void }) {
               <li className="text-xs text-muted-foreground leading-relaxed flex gap-2">
                 <span className="shrink-0 mt-0.5">•</span>
                 <span>
-                  現在、<span className="font-medium text-foreground">2024年 第50回衆議院議員総選挙</span>までのデータを掲載しています。
+                  現在、<span className="font-medium text-foreground">2026年 第51回衆議院議員総選挙</span>のデータのみを掲載しています。
                   新しい選挙や国会会期のデータは随時追加していきます。
                 </span>
               </li>
