@@ -27,7 +27,7 @@ export function AdministrationTracker() {
   const [selectedPartyId, setSelectedPartyId] = useState<number | null>(null);
   const [activeStatus, setActiveStatus] = useState<FinalStatus | null>(null);
   const [page, setPage] = useState(1);
-  const [pageInput, setPageInput] = useState(1);
+  const [pageInput, setPageInput] = useState<string>('1');
   const [selectedPledge, setSelectedPledge] = useState<PledgeTrackerItem | null>(null);
 
   // 初回ロード時に最新の選挙を選択
