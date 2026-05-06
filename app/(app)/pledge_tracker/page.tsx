@@ -21,7 +21,8 @@ function Modal({ onClose }: { onClose: () => void }) {
     return (
     <div
       className={`
-        fixed inset-0 z-100 flex items-center justify-center p-4
+        fixed inset-0 z-100 flex items-center justify-center
+        p-2 sm:p-4
         transition-opacity duration-200
         ${closing ? 'opacity-0' : 'opacity-100'}
       `}
@@ -35,12 +36,13 @@ function Modal({ onClose }: { onClose: () => void }) {
         className={`
           relative w-full max-w-lg bg-background border border-border
           rounded-2xl shadow-2xl overflow-hidden
+          max-h-[90vh] overflow-y-auto
           transition-all duration-200
           ${closing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}
         `}
       >
         {/* ヘッダー */}
-        <div className="px-6 pt-6 pb-4">
+        <div className="px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4">
           <h2 className="text-xl font-bold tracking-tight">
             公約トラッカーへようこそ
           </h2>
@@ -50,7 +52,7 @@ function Modal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* 本文 */}
-        <div className="px-6 pb-6 space-y-4">
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-3 sm:space-y-4">
 
           <p className="text-sm text-muted-foreground leading-relaxed">
             本サービスは、各政党の選挙公約が国会に提出された法案によって
@@ -124,7 +126,7 @@ function Modal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* フッター */}
-        <div className="px-6 pb-6">
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6">
           <button
             onClick={handleClose}
             className="
@@ -166,7 +168,7 @@ export default function PledgeTrackerPage() {
   return (
     <div className="h-screen overflow-hidden flex">
       {/* Sidebar */}
-      <div className="w-48 shrink-0 border-r flex flex-col bg-background">
+      <div className="hidden sm:flex w-48 shrink-0 border-r flex-col bg-background">
         <nav className="flex-1 px-3 py-4 space-y-5">
           {TABS.map((group) => (
             <div key={group.group}>

@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
 
   title: {
-    default: `公約トラッカー - ${SITE_NAME}`,
+    default: `${SITE_NAME} - 公約トラッカー`,
     template: `%s | ${SITE_NAME}`,
   },
 
@@ -77,7 +77,7 @@ export const metadata: Metadata = {
   /* ── Twitter Card（POLITIKI に統一） ── */
   twitter: {
     card: 'summary_large_image',
-    title: `${SITE_NAME} – 政治ポジション診断 & 公約トラッカー`,
+    title: `${SITE_NAME} – 公約トラッカー`,
     description: DESCRIPTION_JA,
     images: [`${SITE_URL}/og.png`],
     // site: '@politiki_jp',   // 公式アカウントがあれば追加
