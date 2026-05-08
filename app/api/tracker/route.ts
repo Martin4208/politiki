@@ -30,7 +30,6 @@ export interface PledgeTrackerItem {
   party_id: number;
   category: string;
   final_status: FinalStatus;
-  best_score: number;
   best_bill_id: string | null;
   all_bill_ids: string[];
   achieved_elements: string[];
@@ -58,11 +57,11 @@ export interface StatusSummary {
   regressive: number;
   unstarted: number;
   needs_review: number;
-  avg_score: number;
+  achievement_rate: number;
 }
 
 // ---------------------------------------------------------------------------
-// Supabase クライアント
+// ステータス順序
 // ---------------------------------------------------------------------------
 
 const STATUS_ORDER: Record<FinalStatus, number> = {
@@ -72,12 +71,13 @@ const STATUS_ORDER: Record<FinalStatus, number> = {
   unstarted: 4,
   regressive: 5,
 };
+
 // ---------------------------------------------------------------------------
 // GET ハンドラ
 // ---------------------------------------------------------------------------
 
 export async function GET(req: NextRequest) {
-  const supabase = getSupabase()
+  const supabase = getSupabase();
   const { searchParams } = req.nextUrl;
 
   // --- パラメータのパース ---
@@ -108,7 +108,7 @@ export async function GET(req: NextRequest) {
       .from("pledge_tracker")
       .select(
         `pledge_id, pledge_text, party_id, category, final_status,
-         best_score, best_bill_id, all_bill_ids, achieved_elements,
+         best_bill_id, all_bill_ids, achieved_elements,
          missing_elements, reasoning, needs_review, review_reason, updated_at, sources`,
         { count: "exact" }
       )
@@ -133,7 +133,6 @@ export async function GET(req: NextRequest) {
     // クエリの順序指定
     query = query
       .order("final_status", { ascending: true })
-      .order("best_score", { ascending: false })   
       .order("pledge_id", { ascending: true });
 
     const { data, count, error } = await query;
@@ -144,8 +143,7 @@ export async function GET(req: NextRequest) {
     const sorted = (data ?? []).sort((a, b) => {
       const sa = STATUS_ORDER[a.final_status as FinalStatus] ?? 99;
       const sb = STATUS_ORDER[b.final_status as FinalStatus] ?? 99;
-      if (sa !== sb) return sa - sb;
-      return (b.best_score ?? 0) - (a.best_score ?? 0);
+      return sa - sb;
     });
 
     const items: PledgeTrackerItem[] = sorted.map((row) => ({
@@ -154,7 +152,6 @@ export async function GET(req: NextRequest) {
       party_id: Number(row.party_id),
       category: row.category,
       final_status: row.final_status as FinalStatus,
-      best_score: Number(row.best_score),
       best_bill_id: row.best_bill_id ?? null,
       all_bill_ids: row.all_bill_ids ?? [],
       achieved_elements: row.achieved_elements ?? [],
@@ -176,7 +173,7 @@ export async function GET(req: NextRequest) {
     // ── サマリークエリ（status/needs_review フィルタ除外）──
     let summaryQuery = supabase
       .from("pledge_tracker")
-      .select("final_status, needs_review, best_score");
+      .select("final_status, needs_review");
 
     if (administration !== undefined) {
       summaryQuery = summaryQuery.eq("administration_id", administration);
@@ -198,23 +195,19 @@ export async function GET(req: NextRequest) {
       regressive: 0,
       unstarted: 0,
       needs_review: 0,
-      avg_score: 0,
+      achievement_rate: 0,
     };
-
-    let scoreSum = 0;
-    let scoreCount = 0;
 
     for (const row of summaryData ?? []) {
       const fs = row.final_status as FinalStatus;
       if (fs in summary) summary[fs]++;
       if (row.needs_review) summary.needs_review++;
-      if (row.best_score != null) {
-        scoreSum += Number(row.best_score);
-        scoreCount++;
-      }
     }
 
-    summary.avg_score = scoreCount > 0 ? Math.round(scoreSum / scoreCount) : 0;
+    const totalPledges = summaryData?.length ?? 0;
+    summary.achievement_rate = totalPledges > 0
+      ? Math.round((summary.achieved / totalPledges) * 100)
+      : 0;
 
     // ── レスポンス ────────────────────────────────────────
     const response: PledgeTrackerResponse = {

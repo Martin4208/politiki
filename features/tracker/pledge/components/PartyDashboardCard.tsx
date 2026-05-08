@@ -63,7 +63,7 @@ export function PartyDashboardCard({
         <div className="flex items-center gap-4">
           <div className="shrink-0">
             {hasData ? (
-              <MiniRing segments={segments} size={72} stroke={5} rate={data?.summary.avg_score ?? 0} />
+              <MiniRing segments={segments} size={72} stroke={5} rate={data?.summary.achievement_rate ?? 0} />
             ) : (
               <div className="w-18 h-18 rounded-full border-2 border-dashed border-muted-foreground/20 flex items-center justify-center">
                 <span className="text-xs text-muted-foreground/40">—</span>

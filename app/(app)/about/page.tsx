@@ -210,7 +210,16 @@ export default function AboutPage() {
             </button> */}
           </div>
         </section>
- 
+
+        {/* フッター */}
+        <footer className="flex">
+          <div>
+              © 2026 POLITIKI
+          </div>
+          <div>
+              v1.0.0
+          </div>
+        </footer>
       </div>
     </div>
   );
