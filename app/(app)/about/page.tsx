@@ -212,13 +212,9 @@ export default function AboutPage() {
         </section>
 
         {/* フッター */}
-        <footer className="flex">
-          <div>
-              © 2026 POLITIKI
-          </div>
-          <div>
-              v1.0.0
-          </div>
+        <footer className="flex items-center justify-between px-6 py-4 border-t border-border/50 text-xs text-muted-foreground/50">
+          <span>© 2026 POLITIKI</span>
+          <span className="tabular-nums">v1.0.0</span>
         </footer>
       </div>
     </div>
