@@ -18,9 +18,6 @@ export function PledgeRow({
       onClick={onClick}
       className="w-full text-left border-b border-border/50 py-4 px-3 hover:bg-accent/50 transition-colors duration-150 flex items-center gap-4 hover:cursor-pointer"
     >
-      <div className="shrink-0 w-10 text-right">
-        <span className={`text-base font-bold tabular-nums ${s.text}`}>{item.best_score}</span>
-      </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm leading-relaxed line-clamp-1">{item.pledge_text}</p>
         <div className="flex items-center gap-3 mt-1">

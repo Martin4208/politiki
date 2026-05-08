@@ -43,10 +43,6 @@ export function DetailPanel({
               <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
               {s.label}
             </span>
-            <span className={`text-lg font-bold tabular-nums ${s.text}`}>
-              {item.best_score}
-              <span className="text-xs text-muted-foreground font-normal ml-0.5">/ 100</span>
-            </span>
           </div>
           <button
             onClick={onClose}
@@ -78,19 +74,19 @@ export function DetailPanel({
               <div className="flex-1 h-2 bg-muted relative overflow-hidden rounded-full">
                 <div
                   className={`absolute left-0 top-0 h-full rounded-full transition-all duration-500 ${
-                    item.best_score >= 80
+                    item.summary.best_score >= 80
                       ? 'bg-emerald-400'
-                      : item.best_score >= 50
+                      : item.summary.best_score >= 50
                         ? 'bg-amber-400'
-                        : item.best_score >= 20
+                        : item.summary.best_score >= 20
                           ? 'bg-rose-400'
                           : 'bg-zinc-500'
                   }`}
-                  style={{ width: `${item.best_score}%` }}
+                  style={{ width: `${item.summary.best_score}%` }}
                 />
               </div>
               <span className="text-sm text-muted-foreground tabular-nums font-medium">
-                {item.best_score}%
+                {item.summary.best_score}%
               </span>
             </div>
           </div> */}
