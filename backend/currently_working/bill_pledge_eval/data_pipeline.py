@@ -22,12 +22,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-load_dotenv()
+db_url = os.getenv("DATABASE_URL")
 
-# -- Config --
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise RuntimeError("DATABASE_URL が .env に設定されていません")
+if not db_url:
+    load_dotenv()
+    db_url = os.environ.get("DATABASE_URL")
+    
+if not db_url:
+    raise RuntimeError("DATABASE_URL is not set in environment or .env file")
+
 
 GEMINI_API_KEY    = os.getenv("GEMINI_API_KEY")
 GEMINI_CHAT_MODEL = "gemini-2.5-flash-lite"
@@ -47,7 +50,7 @@ llm_semaphore = Semaphore(LLM_MAX_CONCURRENT)
 pool = SimpleConnectionPool(
         minconn=1, 
         maxconn=5, 
-        dsn=DATABASE_URL
+        dsn=db_url
     )
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

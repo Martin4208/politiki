@@ -19,11 +19,15 @@ import psycopg2
 from psycopg2.extras import execute_values
 from dotenv import load_dotenv
 
-load_dotenv()
+db_url = os.getenv("DATABASE_URL")
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise RuntimeError("DATABASE_URL が .env に設定されていません")
+if not db_url:
+    load_dotenv()
+    db_url = os.environ.get("DATABASE_URL")
+    
+if not db_url:
+    raise RuntimeError("DATABASE_URL is not set in environment or .env file")
+
 
 # ============================================================
 # マッピング
@@ -239,7 +243,7 @@ def main():
         print(f"  モード: DRY RUN")
     print()
 
-    conn = psycopg2.connect(DATABASE_URL)
+    conn = psycopg2.connect(db_url)
     total = 0
 
     try:
