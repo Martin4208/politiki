@@ -33,11 +33,6 @@ function PledgeCard({ item }: { item: PledgeTrackerItem }) {
       `}
     >
       <div className="flex items-start gap-4">
-        <div className="flex-shrink-0 w-10 text-right">
-          <span className={`text-lg font-bold tabular-nums ${s.text}`}>
-            {item.best_score}
-          </span>
-        </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm leading-relaxed line-clamp-2">{item.pledge_text}</p>
           <div className="flex items-center gap-3 mt-2 flex-wrap">
@@ -50,7 +45,7 @@ function PledgeCard({ item }: { item: PledgeTrackerItem }) {
         </div>
         <button
           onClick={() => setOpen((v) => !v)}
-          className="flex-shrink-0 text-muted-foreground hover:text-foreground transition-colors text-xs mt-0.5"
+          className="shrink-0 text-muted-foreground hover:text-foreground transition-colors text-xs mt-0.5"
         >
           {open ? '▲' : '▼'}
         </button>
@@ -58,17 +53,6 @@ function PledgeCard({ item }: { item: PledgeTrackerItem }) {
 
       {open && (
         <div className="mt-4 ml-14 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="flex-1 h-1 bg-muted relative overflow-hidden rounded">
-              <div
-                className={`absolute left-0 top-0 h-full rounded transition-all ${
-                  item.best_score >= 80 ? 'bg-emerald-400' : item.best_score >= 50 ? 'bg-amber-400' : 'bg-muted-foreground/30'
-                }`}
-                style={{ width: `${item.best_score}%` }}
-              />
-            </div>
-            <span className="text-xs text-muted-foreground tabular-nums w-12">{item.best_score} / 100</span>
-          </div>
           <p className="text-xs text-muted-foreground leading-relaxed border-l-2 pl-3">
             {item.reasoning}
           </p>

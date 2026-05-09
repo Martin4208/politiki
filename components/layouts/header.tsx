@@ -25,10 +25,10 @@ export function Header() {
                 {/* PC: 横並びボタン */}
                 <div className="hidden sm:flex gap-4">
                     <Button
-                        onClick={() => router.push('/about/data')}
+                        onClick={() => router.push('/about/eval_data')}
                         className="text-sm font-medium bg-black hover:bg-gray-800 transition-colors"
                     >
-                        データについて
+                        評価・データについて
                     </Button>
                     <Button
                         onClick={() => router.push('/about')}
@@ -59,7 +59,7 @@ export function Header() {
                         onClick={() => { router.push('/about/data'); setMenuOpen(false); }}
                         className="w-full text-left px-3 py-3 text-sm rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                        データについて
+                        評価・データについて
                     </button>
                     <button
                         onClick={() => { router.push('/about'); setMenuOpen(false); }}

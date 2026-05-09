@@ -52,3 +52,5 @@ next-env.d.ts
 # other
 dump.sql
 /venv
+
+.claude/

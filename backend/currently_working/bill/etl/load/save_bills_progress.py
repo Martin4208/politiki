@@ -4,10 +4,18 @@ import re
 from dotenv import load_dotenv
 from supabase import create_client, ClientOptions
 
-load_dotenv()
+db_url = os.getenv("DATABASE_URL")
 
-SUPABASE_URL = os.environ["NEXT_PUBLIC_SUPABASE_URL"]
-SUPABASE_KEY = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
+if not db_url:
+    load_dotenv()
+    db_url = os.environ.get("DATABASE_URL")
+    
+if not db_url:
+    raise RuntimeError("DATABASE_URL is not set in environment or .env file")
+
+
+SUPABASE_URL = os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 
 supabase = create_client(
     SUPABASE_URL,
