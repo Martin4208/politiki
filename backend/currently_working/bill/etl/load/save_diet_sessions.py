@@ -30,13 +30,13 @@ def save_diet_sessions(INPUT_FILE='./data/diet_session/diet_session.json'):
     try:
         rows = [
             {
-                "session_number": ds.get("session_number"),
+                "session_number": int(ds.get("session_number")),
                 "name": ds.get("name"),
                 "start_date": ds.get("start_date"),
                 "end_date": ds.get("end_date"),
-                "session_period": ds.get("session_period"),
-                "planned_session_period": ds.get("planned_session_period"),
-                "extended_days": ds.get("extended_days"),
+                "session_period": int(ds.get("session_period")),
+                "planned_session_period": int(ds.get("planned_session_period")),
+                "extended_days": int(ds.get("extended_days")),
             }
             for ds in diet_sessions
         ]
