@@ -11,7 +11,28 @@ SLEEP_SECONDS = 2          # レート制限対策
 MODEL_NAME = "gemini-embedding-001"
 
 # ===== Gemini client =====
-client = genai.Client(api_key="AIzaSyBP5zNU7P-DkSnh28cE8A2q4b_VVvbJ5eE")
+import os
+from dotenv import load_dotenv
+import hashlib
+from psycopg2.pool import SimpleConnectionPool
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
+logger = logging.getLogger(__name__)
+
+db_url = os.getenv("DATABASE_URL")
+
+if not db_url:
+    load_dotenv()
+    db_url = os.environ.get("DATABASE_URL")
+    
+if not db_url:
+    raise RuntimeError("DATABASE_URL is not set in environment or .env file")
+
+
+GEMINI_API_KEY    = os.getenv("GEMINI_API_KEY")
 
 # ===== チャンク関数 =====
 def chunk_text(text: str, size: int):
