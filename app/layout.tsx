@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 
   title: {
     default: `${SITE_NAME} - 公約トラッカー`,
-    template: `%s | ${SITE_NAME}`,
+    template: `${SITE_NAME} | %s`,
   },
 
   description: DESCRIPTION_JA,
