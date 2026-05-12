@@ -102,19 +102,24 @@ export const viewport: Viewport = {
 /* ───────────────────── JSON-LD 構造化データ ─────────────── */
 
 const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: SITE_NAME,
-  url: SITE_URL,
-  description: DESCRIPTION_JA,
-  applicationCategory: 'UtilitiesApplication',
-  operatingSystem: 'All',
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'JPY',
-  },
-  inLanguage: ['ja', 'en'],
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": SITE_NAME,
+      "alternateName": ["ポリティキ", "politiki"],
+      "url": SITE_URL,
+    },
+    {
+      "@type": "WebApplication",
+      "name": SITE_NAME,
+      "url": SITE_URL,
+      "description": DESCRIPTION_JA,
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "All",
+      "inLanguage": ["ja", "en"],
+    }
+  ]
 };
 
 /* ───────────────────── Root Layout ────────────────────── */
